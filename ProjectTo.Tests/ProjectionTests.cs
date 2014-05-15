@@ -6,12 +6,12 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ProjectTo.Tests.Mapping
 {
-    [TestClass]
-    public class ProjectionTests
-    {
-        IQueryable<Author> CreateAuthors()
-        {
-            var authors = new []
+	[TestClass]
+	public class ProjectionTests
+	{
+		IQueryable<Author> CreateAuthors()
+		{
+			var authors = new[]
                 {
                     new Author
                         {
@@ -38,12 +38,12 @@ namespace ProjectTo.Tests.Mapping
                                 }
                         }
                 }.AsQueryable();
-            return authors;
-        }
+			return authors;
+		}
 
-        IQueryable<EMPLOYEE> CreateEmployees()
-        {
-            var employees = new[]
+		IQueryable<EMPLOYEE> CreateEmployees()
+		{
+			var employees = new[]
                 {
                     new EMPLOYEE
                         {
@@ -65,84 +65,84 @@ namespace ProjectTo.Tests.Mapping
                                 }
                         }
                 }.AsQueryable();
-            return employees;
-        }
-        
-        [TestMethod]
-        public void Project_SimpleProperties_OK()
-        {
-            var authors = CreateAuthors();
-            var result = authors.Project().To<AuthorView>().First();
-            Assert.AreEqual(1, result.Id);
-            Assert.AreEqual("Bradbury", result.LastName);
-            Assert.AreEqual("Ray", result.FirstName);
-        }
+			return employees;
+		}
 
-        [TestMethod]
-        public void Project_SimplePropertiesUnderscore_OK()
-        {
-            var employees = CreateEmployees();
-            var result = employees.Project().To<EMPLOYEE_VIEW>().First();
-            Assert.AreEqual(1, result.ID);
-            Assert.AreEqual("Smith", result.LAST_NAME);
-            Assert.AreEqual("John", result.FIRST_NAME);
-        }
+		[TestMethod]
+		public void Project_SimpleProperties_OK()
+		{
+			var authors = CreateAuthors();
+			var result = authors.Project().To<AuthorView>().First();
+			Assert.AreEqual(1, result.Id);
+			Assert.AreEqual("Bradbury", result.LastName);
+			Assert.AreEqual("Ray", result.FirstName);
+		}
 
-        /// <summary>
-        /// Nested property = CamelCase convention
-        /// </summary>
-        [TestMethod]
-        public void Project_NestedPropertiesCamelCase_OK()
-        {
-            var authors = CreateAuthors();
-            var result = authors.Project().To<AuthorView>().First();
-            Assert.AreEqual("USA", result.CountryName);
-        }
+		[TestMethod]
+		public void Project_SimplePropertiesUnderscore_OK()
+		{
+			var employees = CreateEmployees();
+			var result = employees.Project().To<EMPLOYEE_VIEW>().First();
+			Assert.AreEqual(1, result.ID);
+			Assert.AreEqual("Smith", result.LAST_NAME);
+			Assert.AreEqual("John", result.FIRST_NAME);
+		}
 
-        /// <summary>
-        /// Nested property = Underscore convention
-        /// </summary>
-        [TestMethod]
-        public void Project_NestedPropertiesUnderscore_OK()
-        {
-            var employees = CreateEmployees();
-            var result = employees.Project().To<EMPLOYEE_VIEW>().First();
-            Assert.AreEqual("IT", result.DEPARTMENT_NAME);
-        }
+		/// <summary>
+		/// Nested property = CamelCase convention
+		/// </summary>
+		[TestMethod]
+		public void Project_NestedPropertiesCamelCase_OK()
+		{
+			var authors = CreateAuthors();
+			var result = authors.Project().To<AuthorView>().First();
+			Assert.AreEqual("USA", result.CountryName);
+		}
 
-        /// <summary>
-        /// Nested property = CamelCase convention
-        /// </summary>
-        [TestMethod]
-        public void Project_NestedNestedPropertiesCamelCase_OK()
-        {
-            var authors = CreateAuthors();
-            var result = authors.Project().To<AuthorView>().First();
-            Assert.AreEqual("North America", result.CountryContinentName);
-        }
+		/// <summary>
+		/// Nested property = Underscore convention
+		/// </summary>
+		[TestMethod]
+		public void Project_NestedPropertiesUnderscore_OK()
+		{
+			var employees = CreateEmployees();
+			var result = employees.Project().To<EMPLOYEE_VIEW>().First();
+			Assert.AreEqual("IT", result.DEPARTMENT_NAME);
+		}
 
-        /// <summary>
-        /// Nested property = Underscore convention
-        /// </summary>
-        [TestMethod]
-        public void Project_NestedNestedPropertiesUnderscore_OK()
-        {
-            var employees = CreateEmployees();
-            var result = employees.Project().To<EMPLOYEE_VIEW>().First();
-            Assert.AreEqual("Brown", result.DEPARTMENT_CHIEF_LAST_NAME);
-        }
+		/// <summary>
+		/// Nested property = CamelCase convention
+		/// </summary>
+		[TestMethod]
+		public void Project_NestedNestedPropertiesCamelCase_OK()
+		{
+			var authors = CreateAuthors();
+			var result = authors.Project().To<AuthorView>().First();
+			Assert.AreEqual("North America", result.CountryContinentName);
+		}
 
-        /// <summary>
-        /// Custom mapping
-        /// </summary>
-        [TestMethod]
-        public void Project_CustomMapping_OK()
-        {
-            var authors = CreateAuthors();
-            var result = authors.Project().To<AuthorView>(m=>m.Map(t=>t.BookCount, s=>s.Books.Count())).First();
-            Assert.AreEqual(1, result.BookCount);
-            Assert.AreEqual("Bradbury", result.LastName); //Other properties are OK too
-        }
+		/// <summary>
+		/// Nested property = Underscore convention
+		/// </summary>
+		[TestMethod]
+		public void Project_NestedNestedPropertiesUnderscore_OK()
+		{
+			var employees = CreateEmployees();
+			var result = employees.Project().To<EMPLOYEE_VIEW>().First();
+			Assert.AreEqual("Brown", result.DEPARTMENT_CHIEF_LAST_NAME);
+		}
+
+		/// <summary>
+		/// Custom mapping
+		/// </summary>
+		[TestMethod]
+		public void Project_CustomMapping_OK()
+		{
+			var authors = CreateAuthors();
+			var result = authors.Project().To<AuthorView>(m => m.Map(t => t.BookCount, s => s.Books.Count())).First();
+			Assert.AreEqual(1, result.BookCount);
+			Assert.AreEqual("Bradbury", result.LastName); //Other properties are OK too
+		}
 
 		/// <summary>
 		/// More complex custom mapping
@@ -151,7 +151,7 @@ namespace ProjectTo.Tests.Mapping
 		public void Project_CustomMappingNested_OK()
 		{
 			var authors = CreateAuthors();
-			var result = authors.Project().To<AuthorView>(m => m.Map(t => t.BookCount, s => s.Books.Count(b=>b.Title.Length > 0))).First();
+			var result = authors.Project().To<AuthorView>(m => m.Map(t => t.BookCount, s => s.Books.Count(b => b.Title.Length > 0))).First();
 			Assert.AreEqual(1, result.BookCount);
 			Assert.AreEqual("Bradbury", result.LastName); //Other properties are OK too
 		}
@@ -167,5 +167,5 @@ namespace ProjectTo.Tests.Mapping
 			Assert.AreEqual(default(int), result.Id);
 			Assert.AreEqual(default(string), result.LastName);
 		}
-    }
+	}
 }

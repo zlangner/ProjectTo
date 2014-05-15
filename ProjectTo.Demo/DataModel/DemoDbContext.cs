@@ -7,25 +7,25 @@ using System.Data.Entity;
 
 namespace ProjectTo.Demo.DataModel
 {
-    public class DemoDbContext:DbContext
-    {
-        public DemoDbContext()
-            : base()
-        {   
-        }
-        
-        public DbSet<Person> People { get; set; }
-        public DbSet<Country> Countries { get; set; }
-        public DbSet<Book> Books { get; set; }
+	public class DemoDbContext : DbContext
+	{
+		public DemoDbContext()
+			: base()
+		{
+		}
 
-        protected override void OnModelCreating(DbModelBuilder modelBuilder)
-        {
-            modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
+		public DbSet<Person> People { get; set; }
+		public DbSet<Country> Countries { get; set; }
+		public DbSet<Book> Books { get; set; }
 
-            modelBuilder.Entity<Book>().HasOptional(b => b.Author)
-                .WithMany().HasForeignKey(b => b.AuthorId);
+		protected override void OnModelCreating(DbModelBuilder modelBuilder)
+		{
+			modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
 
-            base.OnModelCreating(modelBuilder);
-        }
-    }
+			modelBuilder.Entity<Book>().HasOptional(b => b.Author)
+				.WithMany().HasForeignKey(b => b.AuthorId);
+
+			base.OnModelCreating(modelBuilder);
+		}
+	}
 }

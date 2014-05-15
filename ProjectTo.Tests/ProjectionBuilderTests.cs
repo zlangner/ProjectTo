@@ -7,12 +7,12 @@ using System.Linq.Expressions;
 
 namespace ProjectTo.Tests.Mapping
 {
-    [TestClass]
-    public class ProjectionBuilderTests
-    {
-        IQueryable<EMPLOYEE> CreateEmployees()
-        {
-            var employees = new[]
+	[TestClass]
+	public class ProjectionBuilderTests
+	{
+		IQueryable<EMPLOYEE> CreateEmployees()
+		{
+			var employees = new[]
                 {
                     new EMPLOYEE
                         {
@@ -34,81 +34,81 @@ namespace ProjectTo.Tests.Mapping
                                 }
                         }
                 }.AsQueryable();
-            return employees;
-        }
+			return employees;
+		}
 
-        [TestMethod]
-        public void ProjectionBuilder_PartialProjection_OK()
-        {
-            Expression<Func<EMPLOYEE, EmployeeHeirarchyView>> proj = e => new EmployeeHeirarchyView
-            {
-                Id = e.ID
-            };
+		[TestMethod]
+		public void ProjectionBuilder_PartialProjection_OK()
+		{
+			Expression<Func<EMPLOYEE, EmployeeHeirarchyView>> proj = e => new EmployeeHeirarchyView
+			{
+				Id = e.ID
+			};
 
-            var employees = CreateEmployees();
+			var employees = CreateEmployees();
 
-            var result = employees.Select(proj).First();
+			var result = employees.Select(proj).First();
 
-            //var authors = CreateAuthors();
-            //var result = authors.Project().To<AuthorView>().First();
-            Assert.AreEqual(1, result.Id);
-            Assert.IsNull(result.Dept);
-        }
+			//var authors = CreateAuthors();
+			//var result = authors.Project().To<AuthorView>().First();
+			Assert.AreEqual(1, result.Id);
+			Assert.IsNull(result.Dept);
+		}
 
-        [TestMethod]
-        public void ProjectionBuilder_MergingProjections_OK()
-        {
-            Expression<Func<EMPLOYEE, EmployeeHeirarchyView>> proj = e => new EmployeeHeirarchyView
-            {
-                Id = e.ID
-            };
+		[TestMethod]
+		public void ProjectionBuilder_MergingProjections_OK()
+		{
+			Expression<Func<EMPLOYEE, EmployeeHeirarchyView>> proj = e => new EmployeeHeirarchyView
+			{
+				Id = e.ID
+			};
 
-            proj = proj.Map(e => new EmployeeHeirarchyView
-            {
-                Dept = new DepartmentView
-                {
-                    LastName = e.DEPARTMENT.CHIEF.LAST_NAME,
-                    Name = e.DEPARTMENT.NAME
-                }
-            });
+			proj = proj.Map(e => new EmployeeHeirarchyView
+			{
+				Dept = new DepartmentView
+				{
+					LastName = e.DEPARTMENT.CHIEF.LAST_NAME,
+					Name = e.DEPARTMENT.NAME
+				}
+			});
 
-            var employees = CreateEmployees();
+			var employees = CreateEmployees();
 
-            var result = employees.Select(proj).First();
+			var result = employees.Select(proj).First();
 
-            //var authors = CreateAuthors();
-            //var result = authors.Project().To<AuthorView>().First();
-            Assert.AreEqual(1, result.Id);
-            Assert.IsNotNull(result.Dept);
-            Assert.AreEqual("IT", result.Dept.Name);
-            Assert.AreEqual("Brown", result.Dept.LastName);
-        }
+			//var authors = CreateAuthors();
+			//var result = authors.Project().To<AuthorView>().First();
+			Assert.AreEqual(1, result.Id);
+			Assert.IsNotNull(result.Dept);
+			Assert.AreEqual("IT", result.Dept.Name);
+			Assert.AreEqual("Brown", result.Dept.LastName);
+		}
 
 
-        [TestMethod]
-        public void ProjectionBuilder_MergingProjections2_OK()
-        {
-            Expression<Func<EMPLOYEE, EmployeeHeirarchyView>> proj = e => new EmployeeHeirarchyView
-            {
-                Id = e.ID
-            };
+		[TestMethod]
+		public void ProjectionBuilder_MergingProjections2_OK()
+		{
+			Expression<Func<EMPLOYEE, EmployeeHeirarchyView>> proj = e => new EmployeeHeirarchyView
+			{
+				Id = e.ID
+			};
 
-            proj = proj.Map(e => e.Dept, a => new DepartmentView
-            {
-                LastName = a.DEPARTMENT.CHIEF.LAST_NAME,
-                Name = a.DEPARTMENT.NAME
-            });
+			proj = proj.Map(e => e.Dept, a => new DepartmentView
+			{
+				LastName = a.DEPARTMENT.CHIEF.LAST_NAME,
+				Name = a.DEPARTMENT.NAME
+			});
 
-            var employees = CreateEmployees();
+			var employees = CreateEmployees();
 
-            var result = employees.Select(proj).First();
+			var result = employees.Select(proj).First();
 
-            //var authors = CreateAuthors();
-            //var result = authors.Project().To<AuthorView>().First();
-            Assert.AreEqual(1, result.Id);
-            Assert.IsNotNull(result.Dept);
-            Assert.AreEqual("IT", result.Dept.Name);
-            Assert.AreEqual("Brown", result.Dept.LastName);
-        }
-    }
+			//var authors = CreateAuthors();
+			//var result = authors.Project().To<AuthorView>().First();
+			Assert.AreEqual(1, result.Id);
+			Assert.IsNotNull(result.Dept);
+			Assert.AreEqual("IT", result.Dept.Name);
+			Assert.AreEqual("Brown", result.Dept.LastName);
+		}
+	}
 }

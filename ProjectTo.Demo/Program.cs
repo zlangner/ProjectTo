@@ -8,19 +8,19 @@ using ProjectTo.Demo.DataModel;
 
 namespace ProjectTo.Demo
 {
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            Database.SetInitializer(new DbInitializer());
+	class Program
+	{
+		static void Main(string[] args)
+		{
+			Database.SetInitializer(new DbInitializer());
 
-            using (var context = new DemoDbContext())
-            {
-                //Simple Demo2
-                var firstAuthor = context.People
-                    .Project().To<PersonView1>().FirstOrDefault();
-                if(firstAuthor != null)
-                    Console.WriteLine("{0} from {1}", firstAuthor.LastName, firstAuthor.CountryName);
+			using (var context = new DemoDbContext())
+			{
+				//Simple Demo2
+				var firstAuthor = context.People
+					.Project().To<PersonView1>().FirstOrDefault();
+				if (firstAuthor != null)
+					Console.WriteLine("{0} from {1}", firstAuthor.LastName, firstAuthor.CountryName);
 
 				//Custom mapping
 				if (true)
@@ -46,29 +46,29 @@ namespace ProjectTo.Demo
 				if (true)
 				{
 					var author = context.People
-						.Project().To<PersonView3>(m=>m.Map(t=>t.Sum, s=>s.Books.Sum(b=>b.Price)))
+						.Project().To<PersonView3>(m => m.Map(t => t.Sum, s => s.Books.Sum(b => b.Price)))
 						.FirstOrDefault();
 					if (author != null)
 						Console.WriteLine("Total price - {0}", author.Sum);
 				}
-            }
-            
-            Console.ReadLine();
-        }
+			}
+
+			Console.ReadLine();
+		}
 
 		static void PersonView2Mapping(Mapper<Person, PersonView2> m)
 		{
 			m.Map(t => t.HasCountry, s => s.CountryId != null);
 		}
-    }
+	}
 
-	
 
-    internal class PersonView1
-    {
-        public string LastName { get; set; }
-        public string CountryName { get; set; }
-    }
+
+	internal class PersonView1
+	{
+		public string LastName { get; set; }
+		public string CountryName { get; set; }
+	}
 
 	internal class PersonView2
 	{

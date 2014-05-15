@@ -9,7 +9,7 @@ namespace ProjectTo
 
 		private readonly object lockObject = new object();
 		private readonly Dictionary<UInt64, object> dict = new Dictionary<UInt64, object>();
-		
+
 		public object FindValue(string key)
 		{
 			lock (lockObject)
