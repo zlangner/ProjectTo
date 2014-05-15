@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace ProjectTo
 {
-    public interface IProjectionExpression<TSource> : IProjectionBuilder<TSource>
+    public interface IProjectionBuilder<TSource>
     {
         /// <summary>
         /// Project a elements of a query to a to a compatible model.
@@ -17,7 +18,7 @@ namespace ProjectTo
         /// </remarks>
         /// <typeparam name="TDest"></typeparam>
         /// <returns></returns>
-        IQueryable<TDest> To<TDest>();
+        Expression<Func<TSource, TDest>> ToExpression<TDest>();
 
         /// <summary>
         /// Project a elements of a query to a different shape, with custom mappings.
@@ -32,6 +33,6 @@ namespace ProjectTo
         /// cannot be case implicitly, use the <param name="customMapper"/> to assign a value to the property.
         /// </remarks>
         /// <returns></returns>
-        IQueryable<TDest> To<TDest>(Action<Mapper<TSource, TDest>> customMapper);
+        Expression<Func<TSource, TDest>> ToExpression<TDest>(Action<Mapper<TSource, TDest>> customMapper);
     }
 }

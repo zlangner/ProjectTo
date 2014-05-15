@@ -11,16 +11,16 @@ namespace ProjectTo
     /// Maps custom property (beyond conventions)
     /// </summary>
     public class Mapper<TSource, TDest>
-    {	
-		private readonly List<Mapping> customMappings;
+    {
+        private readonly List<Mapping> customMappings;
         private readonly List<PropertyInfo> ignoreProperties;
 
-	    internal bool IsDefaultMappingIgnored { get; set; }
+        internal bool IsDefaultMappingIgnored { get; set; }
 
-	    internal Mapper(List<Mapping> customMappings, List<PropertyInfo> ignoreProperties)
-	    {
-			this.IsDefaultMappingIgnored = false;
-			this.customMappings = customMappings;
+        internal Mapper(List<Mapping> customMappings, List<PropertyInfo> ignoreProperties)
+        {
+            this.IsDefaultMappingIgnored = false;
+            this.customMappings = customMappings;
             this.ignoreProperties = ignoreProperties;
         }
 
@@ -31,21 +31,37 @@ namespace ProjectTo
             return this;
         }
 
+        public Mapper<TSource, TDest> Map(Expression<Func<TSource, TDest>> transform)
+        {
+            var miExp = transform.Body as MemberInitExpression;
+            if (miExp != null)
+            {
+                foreach (var b in miExp.Bindings)
+                {
+                    var e = (b as MemberAssignment).Expression;
+                    LambdaExpression transformExpression = Expression.Lambda(e, transform.Parameters.ToArray());
+                    customMappings.Add(new Mapping(b.Member as PropertyInfo, transformExpression));
+                }
+            }
+
+            return this;
+        }
+
         public Mapper<TSource, TDest> Ignore<TProperty>(Expression<Func<TDest, TProperty>> property)
         {
             ignoreProperties.Add(ReflectionHelper.GetPropertyInfo(property));
 
             return this;
         }
-		/// <summary>
-		/// If this option is set all default mapping conventions will be ignored.
-		/// So only explicit mapping will be used
-		/// </summary>
-		/// <returns></returns>
-		public Mapper<TSource, TDest> IgnoreDefaultMapping()
-		{
-			this.IsDefaultMappingIgnored = true;
-			return this;
-		}
+        /// <summary>
+        /// If this option is set all default mapping conventions will be ignored.
+        /// So only explicit mapping will be used
+        /// </summary>
+        /// <returns></returns>
+        public Mapper<TSource, TDest> IgnoreDefaultMapping()
+        {
+            this.IsDefaultMappingIgnored = true;
+            return this;
+        }
     }
 }

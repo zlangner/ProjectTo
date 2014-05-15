@@ -39,10 +39,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IProjectionBuilder.cs" />
     <Compile Include="IProjectionExpression.cs" />
     <Compile Include="Mapper.cs" />
     <Compile Include="Mapping.cs" />
     <Compile Include="ProjectionCache.cs" />
+    <Compile Include="ProjectionBuilder.cs" />
     <Compile Include="ProjectionExpression.cs" />
     <Compile Include="ProjectionExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

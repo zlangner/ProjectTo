@@ -3,13 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Express 2013 for Windows Desktop
 VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{988D8B65-6960-46A4-BB08-61DD52EDF3FE}"
-	ProjectSection(SolutionItems) = preProject
-		Local.testsettings = Local.testsettings
-		ProjectTo.vsmdi = ProjectTo.vsmdi
-		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectTo.Demo", "ProjectTo.Demo\ProjectTo.Demo.csproj", "{BFBC1DC2-3301-4168-8AFA-1D6F2A34B570}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectTo.Tests", "ProjectTo.Tests\ProjectTo.Tests.csproj", "{4CBD0E55-4D17-4A7E-A0AB-5CAF8A2469DF}"
