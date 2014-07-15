@@ -18,6 +18,16 @@ namespace ProjectTo
 		/// The root parameter of expression tree
 		/// </summary>
 		protected readonly ParameterExpression rootParameter = Expression.Parameter(typeof(TSource), "__p__");
+		
+		/// <summary>
+		/// Specifies if we want to use caching
+		/// </summary>
+		protected bool UseCache { get; set; }
+
+		public ProjectionBuilder( bool useCache = true ) 
+		{
+			this.UseCache = useCache;
+		}
 
 		/// <summary>
 		/// Creates LINQ expression, using default mapping rules
@@ -36,14 +46,21 @@ namespace ProjectTo
 			var ignoredProperties = new List<PropertyInfo>();
 			var mapper = new Mapper<TSource, TDest>(customMappings, ignoredProperties);
 			customMap(mapper);
+			Expression<Func<TSource, TDest>> expr;
 
-			var cacheKey = CreateCacheKey(typeof(TSource), typeof(TDest), customMappings, ignoredProperties, mapper.IsDefaultMappingIgnored);
-			var expr = ProjectionCache.Current.FindValue(cacheKey) as Expression<Func<TSource, TDest>>;
-			if (expr == null)
-			{
+			if( this.UseCache ) {
+				var cacheKey = CreateCacheKey(typeof(TSource), typeof(TDest), customMappings, ignoredProperties, mapper.IsDefaultMappingIgnored);
+
+				expr = ProjectionCache.Current.FindValue(cacheKey) as Expression<Func<TSource, TDest>>;
+
+				if(expr == null) 
+				{
+					expr = BuildExpression<TDest>(customMappings, ignoredProperties, mapper.IsDefaultMappingIgnored);
+					ProjectionCache.Current.SetValue(cacheKey, expr);
+				}
+			} 
+			else
 				expr = BuildExpression<TDest>(customMappings, ignoredProperties, mapper.IsDefaultMappingIgnored);
-				ProjectionCache.Current.SetValue(cacheKey, expr);
-			}
 
 			return expr;
 		}

@@ -110,5 +110,35 @@ namespace ProjectTo.Tests.Mapping
 			Assert.AreEqual("IT", result.Dept.Name);
 			Assert.AreEqual("Brown", result.Dept.LastName);
 		}
+
+		[TestMethod]
+		public void ProjectionBuilder_NoChaching_OK() 
+		{
+			var employees = CreateEmployees();
+			var proj1Result = employees.Select(ProjectionCacheTest(true)).First();
+			var proj2Result = employees.Select(ProjectionCacheTest(false)).First();
+
+			Assert.AreNotEqual( proj1Result.Dept.Name, proj2Result.Dept.Name );
+		}
+
+		internal static Expression<Func<EMPLOYEE, EmployeeHeirarchyView>> ProjectionCacheTest( bool changeDeptName ) 
+		{
+			// To reproduce issue where due to caching we are ignoring changes in the mapping just call ProjectionBuilder constructor with useCache:=true
+			var pb = new ProjectionBuilder<EMPLOYEE>(false);
+
+			return pb.ToExpression<EmployeeHeirarchyView>( m => {
+				m.IgnoreDefaultMapping();
+
+				m.Map( e => new EmployeeHeirarchyView 
+				{
+					Id = e.ID
+				} );
+				m.Map( e => e.Dept, a => new DepartmentView 
+				{
+					LastName = a.DEPARTMENT.CHIEF.LAST_NAME,
+					Name = (changeDeptName ? "Name: " : string.Empty) + a.DEPARTMENT.NAME
+				} );
+			} );
+		}
 	}
 }
